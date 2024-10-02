@@ -196,6 +196,7 @@ notebook @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/noteb
 notebook_shim @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/notebook-shim_1707339593183/work
 numba @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_477t3bg9vh/croot/numba_1711986264228/work
 numexpr @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/numexpr_1699258484110/work
+numpy==1.21.0
 numpy @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_b7iptlxgej/croot/numpy_and_numpy_base_1708638622773/work/dist/numpy-1.26.4-cp312-cp312-macosx_10_9_x86_64.whl#sha256=17c6374322464ccb505fe098301a221fc8d08783063c9c532ee2e0ac2b7f4983
 numpydoc @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_47wa5q47gb/croot/numpydoc_1718279184243/work
 openai==1.35.15
