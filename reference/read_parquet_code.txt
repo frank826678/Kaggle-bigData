@@ -1,0 +1,11 @@
+df_train = pd.read_parquet('/kaggle/working/df_train_100.parquet')
+
+category_columns = df_train.select_dtypes('category').columns
+df_train[category_columns] = df_train[category_columns].astype('object')
+
+object_columns = df_train.select_dtypes('object').columns
+df_train[object_columns] = df_train[object_columns].fillna('nan')
+df_train[object_columns] = df_train[object_columns].astype('category')
+
+object_columns = df_train.select_dtypes('bool').columns
+df_train[object_columns] = df_train[object_columns].astype('category')
