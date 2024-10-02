@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小組作品 - Kaggle 專案成果展示</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <style>
+        /* 將圖片設置為置中並自動適應頁面 */
+        .centered-image {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%; /* 您可以根據需要調整寬度 */
+            max-width: 100%; /* 確保圖片不會超過螢幕寬度 */
+            height: auto; /* 保持圖片的比例 */
+        }
+        header {
+            background-color: #2d3e50;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #1b2838;
+            padding: 10px;
+            color: white;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            font-size: 18px;
+        }
+        nav a:hover {
+            background-color: #3c5068;
+        }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: auto; }
+        .info-section { margin: 10px; padding: 20px; background-color: #f4f4f4; border-radius: 10px; flex: 1; }
+        h3 { text-align: center; }
+        .info-block { margin: 10px 0; }
+        #probability { font-weight: bold; font-size: 36px; color: red; }
+		#risk-level { font-weight: bold; font-size: 36px; color: red; }
+		#risk-description { font-weight: bold; font-size: 36px; color: red; }
+        .grid-container {
+             display: flex;
+             flex-wrap: nowrap; /* 確保內容不換行 */
+             justify-content: space-between;
+         }
+        .info-section { width: 48%; } /* 2個區塊各占據 48% 寬度，並自動換行 */
+		
+		/* 提交按鈕樣式 */
+        #submit-btn {
+            background-color: #4CAF50; /* 綠色背景 */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px; /* 與下方預測結果區塊的距離 */
+        }
+        
+        #submit-btn:hover {
+            background-color: #45a049; /* 更深的綠色 */
+    </style>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1> Kaggle Competition - Home Credit Risk Model Stability</h1>
+    </header>
+    
+    <nav>
+        <a href=".">模型預測</a>
+        <!--a href="index3.html">EDA</a-->
+        <a href="#" id="borrower-profile-link">EDA</a>
+        <!--a href="index2.html">研究歷程</a-->
+        
+
+    </nav>
+    <div class="container">
+        <h1>使用者資料</h1>
+
+        <!-- 下拉式選單 -->
+        <label for="case_id">選擇使用者代碼:</label>
+        <select id="case_id" name="case_id" onchange="loadData()">
+            <option value="">請選擇</option>
+            {% for case_id in case_ids %}
+            <option value="{{ case_id }}">{{ case_id }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- 四大類資訊的2x2佈局 -->
+        <div class="grid-container">
+            <div class="info-section" id="background-info">
+                <h3>背景資訊</h3>
+                <div class="info-block" id="gender">性別: </div>
+                <div class="info-block" id="age">年齡: </div>
+				<div class="info-block" id="family">家庭: </div>
+				<div class="info-block" id="relation_person">聯絡人: </div>
+            </div>
+
+            <div class="info-section" id="income-info">
+                <h3>收入資訊</h3>
+                <div class="info-block" id="income_type">收入類型: </div>
+				 <div class="info-block" id="income_money">收入金額: </div>
+				<div class="info-block" id="occupation">職業別: </div>
+				<div class="info-block" id="work_year">年資: </div>
+            </div>
+
+            <div class="info-section" id="credit-info">
+                <h3>信用資訊</h3>
+                <div class="info-block" id="loan_rejected">過去9個月被拒絕的貸款次數: </div>
+                <div class="info-block" id="pmtnum">支付貸款總次數: </div>
+                <div class="info-block" id="days180">過去半年被查詢的次數: </div>
+                <div class="info-block" id="past_2year">過去2年逾期天數平均值（含容忍度）: </div>
+            </div>
+
+            <div class="info-section" id="loan-info">
+                <h3>貸款資訊</h3>
+                <div class="info-block" id="loan_amount">貸款金額: </div>
+                <div class="info-block" id="eir">利率: </div>
+            </div>
+        </div>
+		
+		<!-- 新增提交按鈕 -->
+        <button id="submit-btn" onclick="submitData()">提交</button>
+
+        <div class="grid-container">
+            <!-- 模型預測結果 -->
+            <div class="info-section" style="flex: 2;">
+                <h3>模型預測結果</h3>
+                <div class="info-block" id="probability">預測違約率: </div>
+                <div class="info-block" id="risk-level"></div>
+                <div class="info-block" id="risk-description"></div>
+				<!-- 新增用來顯示風險圖片的區域 -->
+                <img id="risk-image" src="" style="display:none; width: 200px;" alt="風險等級圖片">
+            </div>
+        
+            <!-- 違約機率分布 -->
+            <div class="info-section" id="distribution-section" style="flex: 3; display: none;">
+                <h3>違約機率分布</h3>
+                <div id="distribution-chart"></div>
+                <div id="statistics"></div> <!-- 顯示統計數據的區域 -->
+            </div>
+			
+			
+        </div>
+    </div>
+
+    <script>
+	    function drawDistributionChart(probability) {
+        // 違約組數據
+        const defaulter_mean = 0.196550;
+        const defaulter_std = 0.155976;
+        const cut1 = defaulter_mean-defaulter_std;// 第一個切點
+    
+        // 未違約組數據
+        const non_defaulter_mean = 0.025881;
+        const non_defaulter_std = 0.043052;
+        const cut2 = non_defaulter_mean+non_defaulter_std;// 第二個切點
+    
+        // 建立X軸數據範圍
+        const xValues = [];
+        for (let i = -0.2; i <= 0.8; i += 0.001) {
+            xValues.push(i);
+        }
+    
+        // 常態分布函數
+        function normalDistribution(x, mean, std) {
+            return (1 / (std * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
+        }
+    
+        // Y軸數據 (違約組)
+        const defaulter_yValues = xValues.map(x => normalDistribution(x, defaulter_mean, defaulter_std));
+        // Y軸數據 (未違約組)
+        const non_defaulter_yValues = xValues.map(x => normalDistribution(x, non_defaulter_mean, non_defaulter_std));
+    
+        // 分割X值為兩部分：小於0和大於或等於0
+        const xValuesNegative = xValues.filter(x => x < 0);
+        const xValuesPositive = xValues.filter(x => x >= 0);
+        const defaulter_yValuesNegative = defaulter_yValues.slice(0, xValuesNegative.length);
+        const defaulter_yValuesPositive = defaulter_yValues.slice(xValuesNegative.length);
+        const non_defaulter_yValuesNegative = non_defaulter_yValues.slice(0, xValuesNegative.length);
+        const non_defaulter_yValuesPositive = non_defaulter_yValues.slice(xValuesNegative.length);
+    
+        // 畫圖
+        const data = [
+            {
+                x: xValuesNegative,
+                y: defaulter_yValuesNegative,
+                mode: 'lines',
+                name: '違約組 (虛線)',
+                line: { color: 'red', dash: 'dash' },
+                showlegend: false // 隱藏圖例
+            },
+            {
+                x: xValuesPositive,
+                y: defaulter_yValuesPositive,
+                mode: 'lines',
+                name: '違約組',
+                line: { color: 'red' }
+            },
+            {
+                x: xValuesNegative,
+                y: non_defaulter_yValuesNegative,
+                mode: 'lines',
+                name: '未違約組 (虛線)',
+                line: { color: 'green', dash: 'dash' },
+                showlegend: false // 隱藏圖例
+            },
+            {
+                x: xValuesPositive,
+                y: non_defaulter_yValuesPositive,
+                mode: 'lines',
+                name: '未違約組',
+                line: { color: 'green' }
+            },
+            {
+                x: [probability],
+                y: [0],
+                mode: 'markers',
+                name: '預測違約率',
+                marker: { color: 'blue', size: 12 }
+            },
+            {
+                x: [cut1],
+                y: [0],
+                mode: 'lines',
+                name: '切點1-【違約組】(平均值 - 標準差)',
+                line: { color: 'red', dash: 'dot', width: 2 },
+                marker: { size: 10 }
+            },
+            {
+                x: [cut2],
+                y: [0],
+                mode: 'lines',
+                name: '切點2-【未違約組】(平均值 + 標準差)',
+                line: { color: 'green', dash: 'dot', width: 2 },
+                marker: { size: 10 }
+            }
+        ];
+    
+        // Layout 中加入垂直線 (切點)
+        const layout = {
+            title: '違約機率分布',
+            xaxis: { title: '違約機率' },
+            yaxis: { title: '機率密度' },
+            shapes: [
+                {
+                    type: 'line',
+                    x0: cut1,
+                    y0: 0,
+                    x1: cut1,
+                    y1: Math.max(...defaulter_yValues), // 垂直線高度
+                    line: {
+                        color: 'red',
+                        width: 2,
+                        dash: 'dot' // 切點的虛線樣式
+                    },
+                    name: '違約切點1'
+                },
+                {
+                    type: 'line',
+                    x0: cut2,
+                    y0: 0,
+                    x1: cut2,
+                    y1: Math.max(...defaulter_yValues), // 垂直線高度
+                    line: {
+                        color: 'green',
+                        width: 2,
+                        dash: 'dot' // 切點的虛線樣式
+                    },
+                    name: '未違約切點2'
+                }
+            ]
+        };
+        
+        Plotly.newPlot('distribution-chart', data, layout);
+    }
+        function loadData() {
+            const case_id = document.getElementById("case_id").value;
+            console.log(case_id);  // 檢查選中的 case_id 是否正確
+            if (case_id) {
+			    // 隱藏「違約機率分布」區塊
+                document.getElementById('distribution-section').style.display = 'none';
+				document.getElementById('risk-level').style.display = 'none';
+                document.getElementById('risk-description').style.display = 'none';
+				// 隱藏風險圖片
+                const riskImage = document.getElementById('risk-image');
+                riskImage.style.display = 'none';
+                riskImage.src = '';
+				
+                fetch('/get_data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `case_id=${case_id}`
+                })
+                .then(response => response.json())                
+                .then(data => {
+                    if (data.error) {
+                        console.error(data.error);
+                        alert(data.error); // 显示错误信息
+                    } else {
+                    document.getElementById('gender').innerText = `性別: ${data.user_data.max_sex_738L || 'N/A'}`;
+                    document.getElementById('income_money').innerText = `收入金額: ${data.user_data.maininc_215A || 'N/A'}`;
+                    document.getElementById('age').innerText = `年齡: ${data.user_data.max_birth_259D || 'N/A'}`;
+                    document.getElementById('loan_rejected').innerText = `過去9個月被拒絕的貸款次數: ${data.user_data.numrejects9m_859L || '0'}`;
+                    document.getElementById('loan_amount').innerText = `貸款金額: ${data.user_data.credamount_770A || 'N/A'}`;
+                    document.getElementById('pmtnum').innerText = `支付貸款總次數: ${data.user_data.pmtnum_254L || 'N/A'}`;
+                    document.getElementById('past_2year').innerText = `過去2年逾期天數平均值（含容忍度）: ${data.user_data.avgdpdtolclosure24_3658938P || 'N/A'}`;
+                    document.getElementById('days180').innerText = `過去半年被查詢的次數: ${data.user_data.days180_256L || 'N/A'}`;
+                    document.getElementById('eir').innerText = `利率: ${data.user_data.eir_270L || 'N/A'}`;
+					document.getElementById('family').innerText = `家庭: ${data.user_data.max_familystate_726L || 'N/A'}`;
+					document.getElementById('relation_person').innerText = `聯絡人: ${data.user_data.last_relationshiptoclient_642T || 'N/A'}`;
+					document.getElementById('occupation').innerText = `職業別: ${data.user_data.max_empl_industry_691L || 'N/A'}`;
+					document.getElementById('work_year').innerText = `年資: ${data.user_data.max_empl_employedtotal_800L || 'N/A'}`;
+                    document.getElementById('income_type').innerText = `收入類型: ${data.user_data.max_incometype_1044T || 'N/A'}`;
+                    //document.getElementById('probability').innerText = `預測違約率: ${data.probability || 'N/A'}`;
+					// 先不顯示預測機率
+                    document.getElementById('probability').innerText = `預測違約率: `;
+                    document.getElementById('risk-level').innerText = ''; // 清空風險等級
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+		// 新增提交函數，按下提交按鈕後才顯示預測機率和風險等級
+        function submitData() {
+        const case_id = document.getElementById("case_id").value;
+        if (case_id) {
+            fetch('/get_data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `case_id=${case_id}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error(data.error);
+                    alert(data.error);
+                } else {
+                    const probability = data.probability || 0;
+                    //document.getElementById('probability').innerText = `預測違約率: ${probability}`;
+					// 轉換為百分比並取小數點後兩位
+                    probability_show = (probability * 100).toFixed(2);
+                    document.getElementById('probability').innerText = `預測違約率: ${probability_show}%`;
+
+                    // 根據機率顯示風險等級
+                    let riskLevel = '';
+                    if (probability >= 0.0688) {
+                        riskLevel = '高風險';
+                        document.getElementById('risk-description').innerText = `風險說明: 拒絕貸款要求`;
+						riskImagePath = 'static/images/high.jpg'; // 高風險圖片
+                    } else if (probability >= 0.0406 && probability < 0.0688) {
+                        riskLevel = '中風險';
+                        document.getElementById('risk-description').innerText = `風險說明: 請考慮增加利率`;
+						riskImagePath = 'static/images/middle.jpg'; // 中風險圖片
+                    } else {
+                        riskLevel = '低風險';
+                        document.getElementById('risk-description').innerText = `風險說明: 優質客戶`;
+						riskImagePath = 'static/images/low.jpg'; // 低風險圖片
+                    }
+                    document.getElementById('risk-level').innerText = `風險等級: ${riskLevel}`;
+					
+					// 顯示風險等級及風險說明
+                    document.getElementById('risk-level').style.display = 'block';
+                    document.getElementById('risk-description').style.display = 'block';
+					// 顯示違約機率分布區塊
+                    document.getElementById('distribution-section').style.display = 'block';
+				    // 顯示風險圖片
+                    const riskImage = document.getElementById('risk-image');
+                    riskImage.src = riskImagePath;
+                    riskImage.style.display = 'block';
+                    // 繪製常態分布圖，標示預測機率
+                    drawDistributionChart(probability);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
+        $(document).ready(function() {
+            // 點擊借貸者樣貌描繪連結時觸發 AJAX 請求
+            $("#borrower-profile-link").click(function(event) {
+                event.preventDefault(); // 防止默認行為
+                $.ajax({
+                    url: '/index3.html',
+                    method: 'POST',
+                    success: function(response) {
+                        // 將返回的 HTML 內容插入到當前頁面
+                        $("body").html(response);
+                    },
+                    error: function() {
+                        alert("Error loading the probability distribution");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+
+</html>

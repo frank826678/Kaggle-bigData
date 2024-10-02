@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>借貸者樣貌描繪 - Kaggle 專案展示</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        /* 將圖片設置為置中並自動適應頁面 */
+        .centered-image {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%; /* 您可以根據需要調整寬度 */
+            max-width: 100%; /* 確保圖片不會超過螢幕寬度 */
+            height: auto; /* 保持圖片的比例 */
+        }
+        header {
+            background-color: #2d3e50;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #1b2838;
+            padding: 10px;
+            color: white;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            font-size: 18px;
+        }
+        nav a:hover {
+            background-color: #3c5068;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>EDA</h1>
+    </header>
+
+    <nav>
+        <!--a href="index.html">返回主頁</a> -->
+        <a href="{{ url_for('index') }}">返回主頁</a>
+    </nav>
+    <iframe title="IT_Project" width="1480" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=29ea46db-9340-4cde-be8d-9601d6b6db21&autoAuth=true&ctid=c478e9aa-2089-4ea3-9813-0619e40ec90f" frameborder="0" allowFullScreen="true"></iframe>
+
+</body>
+</html>

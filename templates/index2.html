@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>研究歷程 - Kaggle 專案展示</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <style>
+        /* 將圖片設置為置中並自動適應頁面 */
+        .centered-image {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%; /* 您可以根據需要調整寬度 */
+            max-width: 100%; /* 確保圖片不會超過螢幕寬度 */
+            height: auto; /* 保持圖片的比例 */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #2d3e50;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #1b2838;
+            padding: 10px;
+            color: white;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            font-size: 18px;
+        }
+        nav a:hover {
+            background-color: #3c5068;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+        .content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #2d3e50;
+            color: white;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>研究歷程</h1>
+</header>
+
+<nav>
+    <!--a href="index.html">返回主頁</a> -->
+    <a href="{{ url_for('index') }}">返回主頁</a>
+</nav>
+
+<div class="container">
+    <section class="content">
+        <h2>研究動機</h2>
+        <p>透過參與Kaggle競賽，了解不同主題的大數據格式，並結合機器學習、統計理論、PYTHON實作，強化實務操作基礎。</p>
+
+        <h2>目標</h2>
+        <p>1.針對Kaggle競賽主題，提升Leaderboard排名至前10%。</p>
+        <p>2.針對所學相關知識能妥善整合。</p>
+
+        <h2>研究方法</h2>
+        <p>1.巨量資料讀取。</p>
+        <p>2.資料特徵選取。</p>
+        <p>3.模型選擇。</p>
+        <p>4.AI系統整合。</p>
+        <!-- 添加圖片 -->        
+        <img src="{{ url_for('static', filename='images/SystemRelation.png') }}" alt="系統架構圖" class="centered-image">
+        
+        <h2>研究範圍</h2>
+        <p>相關領域知識。</p>
+        <!-- 添加圖片 -->        
+        <img src="{{ url_for('static', filename='images/ML.jpeg') }}" alt="研究範圍" class="centered-image">
+
+        <h2>背景</h2>
+        <h3>競賽目標</h3>
+        <p>本次競賽的目標是預測哪些客戶更有可能拖欠貸款，為消費金融供應商提供更可靠、更持久的方式來評估潛在客戶的違約風險。。</p>
+
+        <h3>數據架構</h3>
+        <p>數據主要包括客戶的收入、貸款金額、貸款期限等基本信息。這些數據用來訓練機器學習模型以預測貸款違約情況。</p>
+
+        <!-- 添加圖片 -->        
+        <img src="{{ url_for('static', filename='images/data_schema.png') }}" alt="數據架構圖" class="centered-image">
+
+        <h3>評估方法</h3>
+        <p>最終指標公式為：<br>穩定性指標 = 平均 Gini + 88.0 * min(0, a) - 0.5 * std(殘差)</p>
+        <p>TBD。</p>
+
+        <h3>結論與分析</h3>
+        <p>TBD</p>
+
+        <h2>延伸應用</h2>
+        <p>TBD</p>
+    </section>
+</div>
+
+<footer>
+    <p>聯絡我: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+</footer>
+
+</body>
+</html>
