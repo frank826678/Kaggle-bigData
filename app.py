@@ -62,7 +62,7 @@ class VotingModel(BaseEstimator, RegressorMixin):
 # 路徑設定
 PARQUET_PATH = 'database/df_train_100.parquet'
 MODEL_PATH  = 'model/lgb_models.joblib'
-MODEL_PATH2 = 'model/cat_models.joblib'
+#MODEL_PATH2 = 'model/cat_models.joblib'
 #MODEL_PATH = 'model/lgb_models_nan.joblib'
 
 df = pd.read_parquet(PARQUET_PATH, engine='pyarrow')
